@@ -28,60 +28,78 @@ def sort_list(plays):
         biggest_num = 0
     return sorted_list
 
+def collect_players():
+    players = []
+    playerloop = True
+    while playerloop:
+        name = input("Enter player name or 'n' if no more: ")
+        if name.upper() == "N":
+            playerloop = False
+        else:
+            player = Player(name)
+            players.append(player)
 
+    return players
+
+            
+def collect_monsters():
+    enemies = []
+    enemyloop = True
+    while enemyloop:
+        name = input("Enter monsters name or 'n' if no more: ")
+        if name.upper() == "N":
+            enemyloop = False
+        else:
+            player = Player(name)
+            enemies.append(player)
+
+    return enemies
+
+def collect_initiative(players):
+    for player in players:
+        while True:
+            try:
+                initiative = input("Enter {}'s initiative (write 'crit if nat 20'): ".format(player.name))
+                if initiative == "crit":
+                    break
+                else:
+                    initiative = int(initiative)
+                    break
+
+            except ValueError:
+                print("initiative must be 'crit' or a number")
+        if initiative == "crit":
+            player.updateIni(999)
+        else:
+            player.updateIni(initiative)
+                    
+    return players
+
+
+
+first = True
+gameRunning = True
 players = []
 enemies = []
-eloop = True
-ploop = True
-gameRunning = True
-
 
 print("="*50 + "\n{0:^50}\n".format("Initiative") + "="*50)
 
 
 while gameRunning: 
-    
-    while ploop:
-        name = input("Enter player name or 'n' if no more: ")
-        if name.upper() == "N":
-            ploop = False
-        else:
-            player = Player(name)
-            players.append(player)
-    
-    while eloop:
-        name = input("Enter monsters name or 'n' if no more: ")
-        if name.upper() == "N":
-            eloop = False
-        else:
-            player = Player(name)
-            enemies.append(player)
-    
-    for player in players:
-        initiative = input("Enter {}'s initiative (write 'crit if nat 20'): ".format(player.name))
-        if initiative == "crit":
-            player.updateIni(999)
-        else:
-            player.updateIni(initiative)
-
-    for enemy in enemies:
-        initiative = input("Enter {}'s initiative (write 'crit if nat 20'): ".format(enemy.name))
-        if initiative == "crit":
-            enemy.updateIni(999)
-        else:
-            enemy.updateIni(initiative)
-
+    #collects players and monsters and combines the lists
+    if first:
+        players = collect_players()
+    enemies = collect_monsters()
     combined = players + enemies
+    #sets this bool to false so that the players arent asked every time
+    first = False
+    combined = collect_initiative(combined)
+    #shuffles the list
     ran.shuffle(combined)
-
-    print("combined, shuffled lists")
-    for i in combined:
-        print("{}: {}".format(i.name, i.ini))
-    
+    #sorts the list
     sorted_list = sort_list(combined)
 
-    print()
-    print("sorted list")
+    print("Initiative Order")
     for i in sorted_list:
         print("{}".format(repr(i)))
     
@@ -90,7 +108,6 @@ while gameRunning:
     if round.upper() == "N":
         gameRunning = False
     else:
-        eloop = True
         enemies.clear()
 
 
