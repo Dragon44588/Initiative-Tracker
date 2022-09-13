@@ -4,14 +4,16 @@ class Player:
     def __init__(self, name):
         self.name = name
         self.ini = 0
+        self.modifier = 0
 
     def __repr__(self):
-        return("{}: {}".format(self.name, self.ini))
+        return("{}:{}, {}".format(self.name, self.modifier, self.ini))
         
     def updateIni(self, initiative):
         self.ini = initiative
 
 
+        
     
 def sort_list(plays):
     length = len(plays)
@@ -36,6 +38,7 @@ def collect_players():
         if name.upper() == "N":
             playerloop = False
         else:
+            modifier = input("Enter the player modifier value: ")
             player = Player(name)
             players.append(player)
 
@@ -50,7 +53,15 @@ def collect_monsters():
         if name.upper() == "N":
             enemyloop = False
         else:
-            player = Player(name)
+            while True:
+                modifier = input("Enter monsters initiative modifier: ")
+                try:
+                    modifier = int(modifier)
+                    break
+                except:
+                    print("modifier has to be an integer")
+                
+            player = Player(name, modifier)
             enemies.append(player)
 
     return enemies
@@ -99,6 +110,8 @@ while gameRunning:
     #sorts the list
     sorted_list = sort_list(combined)
 
+
+    
     print("Initiative Order")
     for i in sorted_list:
         print("{}".format(repr(i)))
