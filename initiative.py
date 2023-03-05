@@ -1,35 +1,65 @@
 import random as ran
 
-class Player:
-    def __init__(self, name):
+
+###defines the class to hold the name, initiative, and the modifier of players of monsters
+class Creature:
+    def __init__(self, name, modifier):
         self.name = name
         self.ini = 0
-        self.modifier = 0
+        self.mod = modifier
 
+    ##defines how the class will be represented
     def __repr__(self):
-        return("{}:{}, {}".format(self.name, self.modifier, self.ini))
-        
+        return("{}:{}, {}".format(self.name, self.mod, self.ini))
+
+    ##defines how the class will update initiative    
     def updateIni(self, initiative):
         self.ini = initiative
 
+    ##defines how the class will update modifier
+    def updateMod(self, modifier):
+        self.mod = modifier
+
 
         
-    
+###sorts the list of "Creatures" to display the order of attack
 def sort_list(plays):
-    length = len(plays)
+    length = len(plays) - 1
     sorted_list = []
     biggest_num = 0
     pos = 0
-    while len(sorted_list) != length:
-        for p in range(0 , len(plays)):
-            if biggest_num < int(plays[p].ini):
-                biggest_num = int(plays[p].ini)
-                pos = p   
-        sorted_list.append(plays[pos])
-        plays.pop(pos)
-        biggest_num = 0
+
+    while pos < length:
+        first = plays[pos]
+        second = plays[pos + 1]
+        print("{} vs {}".format(first, second))
+
+        if first.ini > second.ini:
+            print("first is biggest")
+        elif second.ini > first.ini:
+            print("second is biggest")
+        else:
+            print("they are equal, so checking mod")
+
+            if first.mod > second.mod:
+                print("first is biggest")
+            elif second.mod > first.mod:
+                print("second is biggest")
+            else:
+                print("mods are equal")
+        pos += 1
+        
+    #step 1: check ini value of first in list 
+    #step 2: if ini is lower than next, continue
+    #step 3: if ini is higher than next, replace
+    #step 4: if ini is equal to next then sort by modifier
+    #step 5: if mod is equal to next then roll 2 dice and sort by dice
+
+
     return sorted_list
 
+
+###collects the players names and their dexterity modifier
 def collect_players():
     players = []
     playerloop = True
@@ -38,34 +68,40 @@ def collect_players():
         if name.upper() == "N":
             playerloop = False
         else:
-            modifier = input("Enter the player modifier value: ")
-            player = Player(name)
-            players.append(player)
+            while True:
+                try:
+                    modifier = int(input("Enter the player modifier value: "))
+                    player = Creature(name, modifier)
+                    players.append(player)
+                    break
+                except:
+                    print("Modifier needs to be a positive or negative integer")
 
     return players
 
-            
+
+###collects the monsters names and their dexterity modifer           
 def collect_monsters():
-    enemies = []
-    enemyloop = True
-    while enemyloop:
-        name = input("Enter monsters name or 'n' if no more: ")
+    monsters = []
+    monsterloop = True
+    while monsterloop:
+        name = input("Enter Monsters name or 'n' if no more: ")
         if name.upper() == "N":
-            enemyloop = False
+            monsterloop = False
         else:
             while True:
-                modifier = input("Enter monsters initiative modifier: ")
                 try:
-                    modifier = int(modifier)
+                    modifier = int(input("Enter the Monsters modifier value: "))
+                    monster = Creature(name, modifier)
+                    monsters.append(monster)
                     break
                 except:
-                    print("modifier has to be an integer")
-                
-            player = Player(name, modifier)
-            enemies.append(player)
+                    print("Modifier needs to be a positive or negative integer")
 
-    return enemies
+    return monsters
 
+
+###collects the list of creatures and collects their intiative
 def collect_initiative(players):
     for player in players:
         while True:
@@ -102,16 +138,15 @@ while gameRunning:
         players = collect_players()
     enemies = collect_monsters()
     combined = players + enemies
-    #sets this bool to false so that the players arent asked every time
+    #sets this bool to false so that the players arent collected every time
     first = False
     combined = collect_initiative(combined)
-    #shuffles the list
-    ran.shuffle(combined)
     #sorts the list
     sorted_list = sort_list(combined)
 
 
-    
+    #prints the order of initiative
+
     print("Initiative Order")
     for i in sorted_list:
         print("{}".format(repr(i)))
@@ -122,6 +157,3 @@ while gameRunning:
         gameRunning = False
     else:
         enemies.clear()
-
-
-
