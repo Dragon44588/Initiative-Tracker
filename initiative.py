@@ -25,38 +25,46 @@ class Creature:
 ###sorts the list of "Creatures" to display the order of attack
 def sort_list(plays):
     length = len(plays) - 1
-    sorted_list = []
-    biggest_num = 0
+    increment = 0
     pos = 0
+    x = 0
 
-    while pos < length:
-        first = plays[pos]
-        second = plays[pos + 1]
-        print("{} vs {}".format(first, second))
+    while increment <= length:
+        print()
+        origin = plays[increment]
+        while pos < length:
+            if increment != pos:
+                check = plays[pos]
+                print("checking {} against {}".format(origin, check))
+                
+                if origin.ini > check.ini:
+                    print("{} is bigger than {} and needs to be swapped".format(origin, check))
+                    temp = plays[increment]
+                    plays[increment] = plays[pos]
+                    plays[pos] = temp
 
-        if first.ini > second.ini:
-            print("first is biggest")
-        elif second.ini > first.ini:
-            print("second is biggest")
-        else:
-            print("they are equal, so checking mod")
+                elif origin.ini == check.ini:
+                    print("{} is equal to {}, the modifier needs to be checked".format(origin, check))
 
-            if first.mod > second.mod:
-                print("first is biggest")
-            elif second.mod > first.mod:
-                print("second is biggest")
+                    if origin.mod > check.mod:
+                        print("{} is bigger than {} and needs to be swapped".format(origin, check))
+                        temp = plays[increment]
+                        plays[increment] = plays[pos]
+                        plays[pos] = temp
+                    
+                    elif origin.mod == check.mod:
+                        print("theyre equal >:(")
+                pos +=1
+            
             else:
-                print("mods are equal")
-        pos += 1
-        
-    #step 1: check ini value of first in list 
-    #step 2: if ini is lower than next, continue
-    #step 3: if ini is higher than next, replace
-    #step 4: if ini is equal to next then sort by modifier
-    #step 5: if mod is equal to next then roll 2 dice and sort by dice
+                print("dont check current pos")
+                pos +=1
+                
+        increment += 1
+        pos = 0
 
 
-    return sorted_list
+    return plays
 
 
 ###collects the players names and their dexterity modifier
