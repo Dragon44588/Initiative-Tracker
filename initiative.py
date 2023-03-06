@@ -1,4 +1,5 @@
 import random as ran
+from datetime import datetime as dtime
 
 
 ###defines the class to hold the name, initiative, and the modifier of players of monsters
@@ -10,7 +11,7 @@ class Creature:
 
     ##defines how the class will be represented
     def __repr__(self):
-        return("{}:{}, {}".format(self.name, self.mod, self.ini))
+        return("Name: {}, Modifier: {}, Initiative:{}".format(self.name, self.mod, self.ini))
 
     ##defines how the class will update initiative    
     def updateIni(self, initiative):
@@ -27,7 +28,6 @@ def sort_list(plays):
     length = len(plays) - 1
     increment = 0
     pos = 0
-    x = 0
 
     while increment <= length:
         print()
@@ -35,29 +35,41 @@ def sort_list(plays):
         while pos < length:
             if increment != pos:
                 check = plays[pos]
-                print("checking {} against {}".format(origin, check))
                 
                 if origin.ini > check.ini:
-                    print("{} is bigger than {} and needs to be swapped".format(origin, check))
                     temp = plays[increment]
                     plays[increment] = plays[pos]
                     plays[pos] = temp
 
                 elif origin.ini == check.ini:
-                    print("{} is equal to {}, the modifier needs to be checked".format(origin, check))
 
                     if origin.mod > check.mod:
-                        print("{} is bigger than {} and needs to be swapped".format(origin, check))
                         temp = plays[increment]
                         plays[increment] = plays[pos]
                         plays[pos] = temp
                     
                     elif origin.mod == check.mod:
-                        print("theyre equal >:(")
+                        r1 = 0
+                        r2 = 0
+                        while r1 == r2:
+                            r1 = ran.randint(1,20)
+                            r2 = ran.randint(1,20)
+
+                        if r2 > r1:
+                            print("if {} won with a roll of {} vs {}".format(origin, r2, r1))
+                            temp = plays[pos]
+                            plays[pos] = plays[increment]
+                            plays[increment] = temp
+                        
+                        else:
+                            print("if {} won with a roll of {} vs {}".format(check, r1, r2))
+                            temp = plays[increment]
+                            plays[increment] = plays[pos]
+                            plays[pos] = temp                            
+    
                 pos +=1
             
             else:
-                print("dont check current pos")
                 pos +=1
                 
         increment += 1
@@ -114,20 +126,14 @@ def collect_initiative(players):
     for player in players:
         while True:
             try:
-                initiative = input("Enter {}'s initiative (write 'crit if nat 20'): ".format(player.name))
-                if initiative == "crit":
-                    break
-                else:
-                    initiative = int(initiative)
-                    break
+                initiative = input("Enter {}'s initiative: ".format(player.name))
+                initiative = int(initiative)
+                break
 
             except ValueError:
-                print("initiative must be 'crit' or a number")
-        if initiative == "crit":
-            player.updateIni(999)
-        else:
-            player.updateIni(initiative)
-                    
+                print("initiative must be a number")
+
+        player.updateIni(initiative)         
     return players
 
 
